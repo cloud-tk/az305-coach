@@ -1,0 +1,11 @@
+# Interne Tools & Editor-Config (nicht oeffentlich)
+.claude/
+AI-Review/
+
+# OS / Editor
+.DS_Store
+Thumbs.db
+*.log
+
+# Node (falls spaeter genutzt)
+node_modules/

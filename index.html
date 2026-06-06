@@ -1,0 +1,434 @@
+<!doctype html>
+<html lang="de">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Architect OS — AZ-305 Coach by Tarek</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="app-shell">
+      <aside class="sidebar" aria-label="Navigation">
+        <div class="brand">
+          <div class="brand-mark">A</div>
+          <div>
+            <h1 class="wordmark">Architect OS</h1>
+            <p class="brand-sig">by Tarek · Cloud Engineer</p>
+          </div>
+        </div>
+
+        <nav class="nav-tabs" aria-label="App Bereiche">
+          <button class="nav-tab active" data-view="dashboard" type="button"><span class="icon">01</span>Sprint</button>
+          <button class="nav-tab" data-view="quiz" type="button"><span class="icon">02</span>Case Drill</button>
+          <button class="nav-tab" data-view="cards" type="button"><span class="icon">03</span>Matrix</button>
+          <button class="nav-tab" data-view="lab" type="button"><span class="icon">04</span>Lab</button>
+          <button class="nav-tab" data-view="cheatsheet" type="button"><span class="icon">05</span>Spickzettel</button>
+          <button class="nav-tab" data-view="analytics" type="button"><span class="icon">06</span>Analytics</button>
+          <button class="nav-tab" data-view="program" type="button"><span class="icon">07</span>Program</button>
+          <button class="nav-tab" data-view="team" type="button"><span class="icon">08</span>Pilot</button>
+        </nav>
+
+        <div class="side-actions">
+          <button class="icon-btn" id="darkToggle" type="button">◑ Dark</button>
+          <button class="icon-btn" id="exportBtn" type="button">↑ Export</button>
+          <button class="icon-btn" id="importBtn" type="button">↓ Import</button>
+          <input type="file" id="importInput" accept=".json" style="display:none" />
+        </div>
+
+        <div class="side-panel">
+          <p class="eyebrow">Interner Zweck</p>
+          <strong>Learn. Design. Review.</strong>
+          <span>AZ-305 bestehen und Azure Architekturwissen im Team reproduzierbar machen.</span>
+        </div>
+      </aside>
+
+      <main>
+        <!-- ==================== SPRINT ==================== -->
+        <section class="view active" id="dashboard">
+          <header class="topline">
+            <div>
+              <p class="eyebrow">High intensity plan</p>
+              <h2>Internal Architect Sprint</h2>
+            </div>
+            <div class="score-ring" aria-label="Fortschritt">
+              <span id="progressPercent">0%</span>
+              <small>Done</small>
+            </div>
+          </header>
+
+          <div class="metrics-grid">
+            <article class="metric metric-green"><span>Lernzeit</span><strong>3-4h/Tag</strong><small>Werktag, fokussiert</small></article>
+            <article class="metric metric-coral"><span>Wochenende</span><strong>5-6h/Tag</strong><small>Labs + Practice</small></article>
+            <article class="metric metric-blue"><span>Exam Gate</span><strong>80%+</strong><small>2x Practice stabil</small></article>
+            <article class="metric metric-gold"><span>Team Loop</span><strong>2-3 Peers</strong><small>Pilot + Feedback</small></article>
+          </div>
+
+          <section class="academy-strip" aria-label="Academy Operating Loop">
+            <div><span>01</span><strong>Learn</strong><small>Study Guide, Cram, Learn Modules</small></div>
+            <div><span>02</span><strong>Decide</strong><small>Cases, Trade-offs, Service Boundaries</small></div>
+            <div><span>03</span><strong>Design</strong><small>Landing Zone, Network, BCDR, Migration</small></div>
+            <div><span>04</span><strong>Review</strong><small>Peer Challenge, Rubric, Score</small></div>
+          </section>
+
+          <section class="planner">
+            <div class="section-head">
+              <div><p class="eyebrow">Tagesplan</p><h3>Heute abhaken, morgen weitermachen</h3></div>
+              <button class="secondary-btn" id="resetProgress" type="button">Reset</button>
+            </div>
+            <div class="day-list" id="dayList"></div>
+          </section>
+        </section>
+
+        <!-- ==================== QUIZ ==================== -->
+        <section class="view" id="quiz">
+          <header class="topline">
+            <div>
+              <p class="eyebrow" id="quizModeLabel">Originale Lernfragen</p>
+              <h2>Architect Case Drill</h2>
+            </div>
+            <div class="quiz-header-actions">
+              <div id="examTimerBox" class="exam-timer" style="display:none">
+                <span class="timer-label">Zeit</span>
+                <span id="examTimerCount" class="timer-count">120:00</span>
+              </div>
+              <button class="secondary-btn" id="newQuiz" type="button">Neue Runde</button>
+              <button class="primary-btn" id="startExam" type="button">Exam Simulation</button>
+            </div>
+          </header>
+
+          <div class="domain-filter-wrap">
+            <p class="eyebrow">Domain Filter</p>
+            <div class="domain-filter" id="domainFilter"></div>
+          </div>
+
+          <div class="quiz-layout">
+            <article class="quiz-card">
+              <div class="question-meta">
+                <span id="questionCounter">Frage 1/10</span>
+                <span id="questionDomain">Domain</span>
+                <button class="bookmark-btn" id="bookmarkBtn" type="button" data-qindex="0">☆ Merken</button>
+              </div>
+              <h3 id="questionText">Frage wird geladen...</h3>
+              <div class="answer-list" id="answerList"></div>
+              <div class="quiz-actions">
+                <button class="secondary-btn" id="prevQuestion" type="button">Zurueck</button>
+                <button class="primary-btn" id="nextQuestion" type="button">Weiter</button>
+              </div>
+            </article>
+
+            <aside class="review-panel">
+              <p class="eyebrow">Resultat</p>
+              <strong id="quizScore">0/0</strong>
+              <span id="quizFeedback">Beantworte die Cases. Ziel: Entscheidungen begruenden.</span>
+              <div class="explanation" id="explanationBox"></div>
+            </aside>
+          </div>
+        </section>
+
+        <!-- ==================== MATRIX ==================== -->
+        <section class="view" id="cards">
+          <header class="topline">
+            <div>
+              <p class="eyebrow">Decision Memory</p>
+              <h2>Services richtig abgrenzen</h2>
+            </div>
+            <input id="cardSearch" class="search" type="search" placeholder="Suchen: Front Door, ZRS, Policy..." />
+          </header>
+          <div class="cards-grid" id="decisionCards"></div>
+        </section>
+
+        <!-- ==================== LAB ==================== -->
+        <section class="view" id="lab">
+          <header class="topline">
+            <div><p class="eyebrow">Hands-on Studio</p><h2>Architecture Lab</h2></div>
+            <span class="pill">8 Design Labs · mit Lösungsskizze</span>
+          </header>
+          <div class="lab-grid">
+            <article class="lab-card">
+              <span class="lab-code">LAB-01</span><h3>Landing Zone Blueprint</h3>
+              <p>Management Groups, Subscriptions, RBAC, Policy, Tags, Monitoring und Security Baseline als Zielbild.</p>
+              <label><input type="checkbox" data-lab="lz-diagram" /> Diagramm erstellt</label>
+              <label><input type="checkbox" data-lab="lz-policy" /> Policy Set definiert</label>
+              <label><input type="checkbox" data-lab="lz-review" /> Peer Review bestanden</label>
+              <details class="lab-solution"><summary>Lösungsskizze</summary>
+                <div class="sol-body">
+                  <p><strong>MG-Hierarchie:</strong> Root → Platform (Identity, Management, Connectivity) + Landing Zones (Corp, Online) + Sandbox + Decommissioned.</p>
+                  <p><strong>Policy-Initiative:</strong> Allowed Locations, Require Tags, Deny Public IP auf NICs, DeployIfNotExists für Diagnostics → zentraler Workspace.</p>
+                  <p><strong>RBAC:</strong> Entra PIM für privilegierte Rollen, Custom Roles nach Least Privilege, Subscription-Owner nur fürs Platform-Team.</p>
+                  <p><strong>Tags &amp; Monitoring:</strong> CostCenter/Env/Owner via „Inherit from subscription", ein Log Analytics Workspace in der Management-Subscription.</p>
+                  <div class="sol-tags"><span class="tag">governance</span><span class="tag">policy</span><span class="tag">rbac</span></div>
+                </div>
+              </details>
+            </article>
+            <article class="lab-card">
+              <span class="lab-code">LAB-02</span><h3>Hybrid Network Design</h3>
+              <p>Hub-Spoke, Private Link, DNS, VPN/ExpressRoute, Front Door und App Gateway sauber abgrenzen.</p>
+              <label><input type="checkbox" data-lab="net-topology" /> Topologie gezeichnet</label>
+              <label><input type="checkbox" data-lab="net-decision" /> Service-Entscheidungen begruendet</label>
+              <label><input type="checkbox" data-lab="net-review" /> Failure Mode Review</label>
+              <details class="lab-solution"><summary>Lösungsskizze</summary>
+                <div class="sol-body">
+                  <p><strong>Topologie:</strong> Hub-Spoke. Hub = Azure Firewall + VPN/ER-Gateway + Bastion + DNS Private Resolver. Spokes peeren nur zum Hub (nicht transitiv → UDR auf Firewall).</p>
+                  <p><strong>On-Prem:</strong> ExpressRoute primär, Site-to-Site VPN als Failover.</p>
+                  <p><strong>PaaS privat:</strong> Private Endpoints + Private DNS Zones zentral im Hub, per VNet-Link auf alle Spokes.</p>
+                  <p><strong>Ingress:</strong> Front Door (global, Anycast, WAF Edge) → App Gateway/WAF (regional, Layer-7).</p>
+                  <div class="sol-tags"><span class="tag">network</span><span class="tag">private-link</span><span class="tag">dns</span></div>
+                </div>
+              </details>
+            </article>
+            <article class="lab-card">
+              <span class="lab-code">LAB-03</span><h3>BCDR Runbook</h3>
+              <p>RTO/RPO, Backup, Site Recovery, Zones, Region Pair und Wiederherstellungswege in ein Runbook bringen.</p>
+              <label><input type="checkbox" data-lab="bcdr-rto" /> RTO/RPO Matrix</label>
+              <label><input type="checkbox" data-lab="bcdr-runbook" /> Failover Runbook</label>
+              <label><input type="checkbox" data-lab="bcdr-test" /> Restore Test beschrieben</label>
+              <details class="lab-solution"><summary>Lösungsskizze</summary>
+                <div class="sol-body">
+                  <p><strong>Tiering:</strong> Mission-critical (RPO≈0 / RTO&lt;1h) → Zones + SQL Auto-Failover Group. Standard (RPO 1h / RTO 4h) → ASR + Geo-Backup. Dev → nur Backup.</p>
+                  <p><strong>VM-DR:</strong> Azure Site Recovery in die Paired Region, Recovery Plans für geordnetes Failover.</p>
+                  <p><strong>Daten:</strong> SQL Auto-Failover Group (ein Listener), Storage GZRS, Cross Region Restore im Vault aktivieren.</p>
+                  <p><strong>Test:</strong> Halbjährlicher Failover-Test, dokumentierte Runbooks, Restore tatsächlich verifizieren.</p>
+                  <div class="sol-tags"><span class="tag">bcdr</span><span class="tag">rto/rpo</span><span class="tag">asr</span></div>
+                </div>
+              </details>
+            </article>
+            <article class="lab-card">
+              <span class="lab-code">LAB-04</span><h3>Migration Assessment</h3>
+              <p>Rehost, Replatform, Refactor, Azure Migrate, DMS, Dependencies und Risiken in einem Assessment.</p>
+              <label><input type="checkbox" data-lab="mig-inventory" /> Workload Inventory</label>
+              <label><input type="checkbox" data-lab="mig-path" /> Migration Path entschieden</label>
+              <label><input type="checkbox" data-lab="mig-risk" /> Risiko-Register erstellt</label>
+              <details class="lab-solution"><summary>Lösungsskizze</summary>
+                <div class="sol-body">
+                  <p><strong>Discovery/Assessment:</strong> Azure Migrate Appliance erfasst Inventar, Abhängigkeiten, Sizing und Kosten — vor jeder Migration.</p>
+                  <p><strong>6 R's:</strong> Rehost (schnell, 1:1), Replatform (PaaS-Mehrwert), Refactor (Cloud-native), Retire/Retain bewusst entscheiden.</p>
+                  <p><strong>Datenbanken:</strong> DMS Online-Modus für minimale Downtime; sehr große Datenmengen offline via Azure Data Box.</p>
+                  <p><strong>Waves:</strong> nach Abhängigkeiten gruppieren, Risiko-Register + Rollback-Plan je Welle.</p>
+                  <div class="sol-tags"><span class="tag">migration</span><span class="tag">caf</span><span class="tag">dms</span></div>
+                </div>
+              </details>
+            </article>
+            <article class="lab-card">
+              <span class="lab-code">LAB-05</span><h3>Identity &amp; Access Blueprint</h3>
+              <p>Hybrid Identity, Conditional Access, PIM, externe Partner und App-Authentifizierung als Zielbild.</p>
+              <label><input type="checkbox" data-lab="idn-hybrid" /> Hybrid-Identity-Modell</label>
+              <label><input type="checkbox" data-lab="idn-ca" /> Conditional-Access-Set</label>
+              <label><input type="checkbox" data-lab="idn-review" /> Access Reviews geplant</label>
+              <details class="lab-solution"><summary>Lösungsskizze</summary>
+                <div class="sol-body">
+                  <p><strong>Hybrid Identity:</strong> Entra Connect mit Password Hash Sync + Seamless SSO. PTA nur, wenn On-Prem-Passwortrichtlinie zwingend live geprüft werden muss.</p>
+                  <p><strong>Conditional Access:</strong> Baseline = MFA für alle, risikobasiert via Identity Protection, Gerätekonformität für sensible Apps.</p>
+                  <p><strong>Privileged Access:</strong> PIM mit Just-in-Time + Approval + MFA; Break-Glass-Konten ausgenommen und überwacht.</p>
+                  <p><strong>Extern &amp; Apps:</strong> B2B-Gäste für Partner, Access Reviews quartalsweise, Managed Identities statt Secrets im Code.</p>
+                  <div class="sol-tags"><span class="tag">identity</span><span class="tag">conditional-access</span><span class="tag">pim</span></div>
+                </div>
+              </details>
+            </article>
+            <article class="lab-card">
+              <span class="lab-code">LAB-06</span><h3>Cost Optimization Review</h3>
+              <p>Visibility, Compute-, Storage- und PaaS-Kosten sowie Governance-Guardrails für ein FinOps-Zielbild.</p>
+              <label><input type="checkbox" data-lab="cost-visibility" /> Cost Visibility aufgesetzt</label>
+              <label><input type="checkbox" data-lab="cost-levers" /> Spar-Hebel identifiziert</label>
+              <label><input type="checkbox" data-lab="cost-guardrails" /> Guardrails definiert</label>
+              <details class="lab-solution"><summary>Lösungsskizze</summary>
+                <div class="sol-body">
+                  <p><strong>Visibility:</strong> Cost Management + Budgets + Anomaly Alerts, durchgängiges Tagging (CostCenter) für Showback.</p>
+                  <p><strong>Compute:</strong> Right-Sizing via Advisor, Reserved/Savings Plan für stabile Last, Spot für Batch, Azure Hybrid Benefit für eigene Lizenzen.</p>
+                  <p><strong>Storage:</strong> Access Tiers + Lifecycle (Hot→Cool→Archive), Redundanz passend wählen (nicht über-replizieren).</p>
+                  <p><strong>PaaS &amp; Governance:</strong> Autoscale, Dev/Test-Auto-Shutdown, Elastic Pool für viele DBs, Policy gegen teure SKUs.</p>
+                  <div class="sol-tags"><span class="tag">cost</span><span class="tag">finops</span><span class="tag">reserved</span></div>
+                </div>
+              </details>
+            </article>
+            <article class="lab-card">
+              <span class="lab-code">LAB-07</span><h3>Zero-Trust Security Baseline</h3>
+              <p>Identität als Perimeter, Netzwerk-Härtung, Datenschutz und Detection/Response in einem Sicherheits-Zielbild.</p>
+              <label><input type="checkbox" data-lab="sec-identity" /> Identity-Perimeter definiert</label>
+              <label><input type="checkbox" data-lab="sec-network" /> Netzwerk gehärtet</label>
+              <label><input type="checkbox" data-lab="sec-detect" /> Detection/Response geplant</label>
+              <details class="lab-solution"><summary>Lösungsskizze</summary>
+                <div class="sol-body">
+                  <p><strong>Identität = Perimeter:</strong> MFA überall, Conditional Access, Least-Privilege-RBAC, PIM für Admins.</p>
+                  <p><strong>Netzwerk:</strong> Private Endpoints, Deny Public Access, Azure Firewall + NSGs, kein offenes RDP/SSH (Bastion + JIT).</p>
+                  <p><strong>Daten:</strong> Key Vault mit RBAC, Customer-Managed Keys wo gefordert, TDE, Immutable Storage für Compliance.</p>
+                  <p><strong>Detect/Respond:</strong> Defender for Cloud (Secure Score) + Sentinel (SIEM/SOAR) + Diagnostic Settings → zentraler Workspace.</p>
+                  <div class="sol-tags"><span class="tag">security</span><span class="tag">zero-trust</span><span class="tag">defender</span></div>
+                </div>
+              </details>
+            </article>
+            <article class="lab-card">
+              <span class="lab-code">LAB-08</span><h3>Data Platform Design</h3>
+              <p>Relationale und NoSQL-Stores, Analytics, Caching und Daten-DR für eine moderne Datenplattform.</p>
+              <label><input type="checkbox" data-lab="dat-stores" /> Store-Auswahl begründet</label>
+              <label><input type="checkbox" data-lab="dat-scale" /> Skalierung/Partitionierung</label>
+              <label><input type="checkbox" data-lab="dat-dr" /> Daten-DR definiert</label>
+              <details class="lab-solution"><summary>Lösungsskizze</summary>
+                <div class="sol-body">
+                  <p><strong>Relational:</strong> Azure SQL DB (PaaS) für neue Apps; Managed Instance bei SQL-Server-Kompatibilität/Lift-and-Shift.</p>
+                  <p><strong>NoSQL global:</strong> Cosmos DB für niedrige Latenz &amp; Multi-Region-Write; Partition Key mit hoher Kardinalität gegen Hot Partitions.</p>
+                  <p><strong>Skalierung &amp; Analytics:</strong> Elastic Pool für viele DBs mit ungleichen Peaks; Synapse (SQL-DWH) bzw. Databricks (Spark/ML); Redis als Cache.</p>
+                  <p><strong>Daten-DR:</strong> Auto-Failover Group / Active Geo-Replication, Point-in-Time Restore, georedundante Backups.</p>
+                  <div class="sol-tags"><span class="tag">data</span><span class="tag">cosmos</span><span class="tag">sql</span></div>
+                </div>
+              </details>
+            </article>
+          </div>
+
+          <section class="planner compact">
+            <div class="section-head"><div><p class="eyebrow">Review Rubric</p><h3>Jedes Design muss diese sechs Fragen bestehen</h3></div></div>
+            <div class="rubric-grid">
+              <div><strong>Security</strong><span>Least Privilege, Private Access, Secrets, Audit.</span></div>
+              <div><strong>Reliability</strong><span>Zones, Backups, DR Path, Health Probes.</span></div>
+              <div><strong>Cost</strong><span>Right Sizing, Tiers, Reserved Capacity, Lifecycle.</span></div>
+              <div><strong>Operations</strong><span>Monitoring, Alerting, Ownership, Runbooks.</span></div>
+              <div><strong>Performance</strong><span>Latency, Scale, Cache, SKU Decisions.</span></div>
+              <div><strong>Governance</strong><span>Policy, Tagging, Subscriptions, Compliance.</span></div>
+            </div>
+          </section>
+        </section>
+
+        <!-- ==================== CHEATSHEET ==================== -->
+        <section class="view" id="cheatsheet">
+          <header class="topline">
+            <div><p class="eyebrow">Exam Spickzettel</p><h2>1 Seite pro Domain</h2></div>
+            <button class="primary-btn" id="printCheatsheet" type="button">🖨 Drucken / als PDF speichern</button>
+          </header>
+          <div class="cheatsheet-toolbar">
+            <p><strong>Last-Minute-Wiederholung.</strong> Jede Domain als kompakte Entscheidungs-Referenz. Klick auf „Drucken" und wähle <strong>„Als PDF speichern"</strong> — jede Domain landet auf einer eigenen Seite.</p>
+            <span class="pill">13 Domains</span>
+          </div>
+          <div class="cheatsheet-grid" id="cheatsheetContent"></div>
+        </section>
+
+        <!-- ==================== ANALYTICS ==================== -->
+        <section class="view" id="analytics">
+          <header class="topline">
+            <div><p class="eyebrow">Performance Tracking</p><h2>Lern-Analytics</h2></div>
+            <button class="secondary-btn" id="resetStats" type="button">Stats zuruecksetzen</button>
+          </header>
+
+          <div class="analytics-summary">
+            <article class="metric metric-green"><span>Gesamt Score</span><strong id="analyticsOverall">—</strong><small>Alle Domains</small></article>
+            <article class="metric metric-blue"><span>Fragen beantwortet</span><strong id="analyticsAnswered">0</strong><small>Kumulativ</small></article>
+            <article class="metric metric-gold"><span>Gemeistert</span><strong id="analyticsMastered">0/150</strong><small>5x richtig in Folge</small></article>
+            <article class="metric metric-coral"><span>Schwache Domains</span><strong style="font-size:16px;word-break:break-word" id="analyticsWeak">—</strong><small>unter 60%</small></article>
+          </div>
+
+          <div class="analytics-grid">
+            <section class="planner">
+              <div class="section-head"><div><p class="eyebrow">Domain Performance</p><h3>Schlechteste Domain zuerst</h3></div></div>
+              <div id="domainChart"><p class="no-data">Noch keine Daten. Starte einen Case Drill.</p></div>
+            </section>
+
+            <section class="planner">
+              <div class="section-head"><div><p class="eyebrow">Score Verlauf</p><h3>Letzte 20 Runden</h3></div></div>
+              <div id="historyList"><p class="no-data">Noch keine abgeschlossenen Runden.</p></div>
+            </section>
+          </div>
+        </section>
+
+        <!-- ==================== PROGRAM ==================== -->
+        <section class="view" id="program">
+          <header class="topline">
+            <div><p class="eyebrow">Learning System</p><h2>Academy Program</h2></div>
+            <span class="pill">Internal v0.4</span>
+          </header>
+          <div class="product-layout">
+            <article class="script-box">
+              <h3>Programmthese</h3>
+              <p>Gute Azure Admins werden nicht automatisch gute Architects. Dieses System trainiert den Sprung: von Service-Wissen zu belastbaren Entscheidungen, Trade-offs, Zielbildern und Reviews.</p>
+              <div class="pricing-row">
+                <div><span>Core Loop</span><strong>Learn</strong></div>
+                <div><span>Practice Loop</span><strong>Design</strong></div>
+                <div><span>Team Loop</span><strong>Review</strong></div>
+              </div>
+            </article>
+            <article class="evidence-box">
+              <h3>Content Roadmap</h3>
+              <label><input type="checkbox" data-program="cases" /> 150 eigene Architektur-Cases (erledigt)</label>
+              <label><input type="checkbox" data-program="cards" /> 32 Decision Cards (erledigt)</label>
+              <label><input type="checkbox" data-program="labs" /> 8 Design Labs mit Lösungsskizze (erledigt)</label>
+              <label><input type="checkbox" data-program="cheatsheet" /> PDF-Spickzettel pro Domain (erledigt)</label>
+              <label><input type="checkbox" data-program="rubric" /> Einheitliche Review-Rubric</label>
+              <label><input type="checkbox" data-program="analytics" /> Domain Analytics + Score Verlauf</label>
+              <label><input type="checkbox" data-program="dashboard" /> Team-Fortschritt und Skill Heatmap</label>
+            </article>
+          </div>
+          <section class="planner compact">
+            <div class="section-head"><div><p class="eyebrow">Skill Ladder</p><h3>Vom Admin zum Architect</h3></div></div>
+            <div class="ladder">
+              <div><span>Level 1</span><strong>Service Recognition</strong><small>Welcher Azure Service passt grundsaetzlich?</small></div>
+              <div><span>Level 2</span><strong>Trade-off Thinking</strong><small>Kosten, Risiko, Betrieb, Security gegeneinander abwaegen.</small></div>
+              <div><span>Level 3</span><strong>Reference Design</strong><small>Zielarchitektur zeichnen und Entscheidungen dokumentieren.</small></div>
+              <div><span>Level 4</span><strong>Review Leadership</strong><small>Designs anderer challengen, verbessern und standardisieren.</small></div>
+            </div>
+          </section>
+        </section>
+
+        <!-- ==================== PILOT ==================== -->
+        <section class="view" id="team">
+          <header class="topline">
+            <div><p class="eyebrow">Chef Demo</p><h2>Team Enablement Pack</h2></div>
+            <button class="primary-btn" id="copyManagerPitch" type="button">Pilot Brief kopieren</button>
+          </header>
+          <div class="value-grid">
+            <article class="value-card value-green"><span>Faster Ramp-up</span><strong>14 Tage</strong><small>Struktur fuer Admins, die Architektur lernen muessen.</small></article>
+            <article class="value-card value-blue"><span>Reusable IP</span><strong>Cases</strong><small>Interne Architekturentscheidungen werden trainierbar.</small></article>
+            <article class="value-card value-coral"><span>Exam Safe</span><strong>No Dumps</strong><small>Eigene Fragen, Microsoft Learn als Referenz, sauberer Ansatz.</small></article>
+            <article class="value-card value-gold"><span>Business Value</span><strong>Skill Lift</strong><small>Mehr Senioritaet im Team, weniger Abhaengigkeit von Einzelpersonen.</small></article>
+          </div>
+          <div class="product-layout">
+            <article class="script-box">
+              <h3>Pilot Brief</h3>
+              <p id="managerPitchText">Ich bereite mich intensiv auf AZ-305 vor und habe dafuer ein strukturiertes internes Lernsystem gebaut: 14-Tage-Sprint, 150 Architektur-Cases, 32 Decision Cards, 8 Design Labs, Analytics-Dashboard und Fortschrittstracking. Ich wuerde das gerne als Pilot mit 2-3 Kollegen testen, damit wir Azure-Architekturwissen im Team schneller, einheitlicher und messbarer aufbauen. Es nutzt keine Exam-Dumps, sondern eigene Lernfaelle und Microsoft Learn als Referenz. Jeder kann seinen Fortschritt exportieren und teilen.</p>
+              <div class="pricing-row">
+                <div><span>Internal Pilot</span><strong>2-3 User</strong></div>
+                <div><span>Team Pack</span><strong>10 User</strong></div>
+                <div><span>Review Clinic</span><strong>1h/Woche</strong></div>
+              </div>
+            </article>
+            <article class="evidence-box">
+              <h3>Pilot Checkliste</h3>
+              <label><input type="checkbox" data-team="scope" /> Scope klar: AZ-305 Architekturtraining, keine echten Exam-Fragen</label>
+              <label><input type="checkbox" data-team="ip" /> IP/Arbeitszeit sauber klaeren: intern, privat oder Firmenauftrag</label>
+              <label><input type="checkbox" data-team="pilot" /> 2-3 Kollegen fuer 14 Tage Pilot nominieren</label>
+              <label><input type="checkbox" data-team="metrics" /> Erfolg messen: Analytics-Score, Practice Score, Feedback</label>
+              <label><input type="checkbox" data-team="decision" /> Nach Pilot entscheiden: interner Ausbau, Lernpfad oder Team-Standard</label>
+            </article>
+          </div>
+          <section class="planner compact">
+            <div class="section-head"><div><p class="eyebrow">Professionelle Grenze</p><h3>So praesentierst du es stark und sauber</h3></div></div>
+            <div class="guardrail-list">
+              <div><strong>Intern klar halten</strong><span>Als Enablement-Pilot zeigen: Nutzen fuer Team, Lernqualitaet und Architekturstandard.</span></div>
+              <div><strong>Kein Kundenmaterial</strong><span>Keine echten Kundennamen, Tenant-Daten, Screenshots oder vertrauliche Details im Tool.</span></div>
+              <div><strong>Kein Dump-Risiko</strong><span>Nur selbst formulierte Cases und offizielle Microsoft-Lernziele. Sauber, professionell, skalierbar.</span></div>
+            </div>
+          </section>
+        </section>
+      </main>
+    </div>
+
+    <!-- ==================== ONBOARDING ==================== -->
+    <div class="modal-overlay" id="onboarding" style="display:none">
+      <div class="modal-card">
+        <div class="modal-mark">A</div>
+        <p class="eyebrow">Willkommen</p>
+        <h2 class="modal-title">Architect Sprint Coach</h2>
+        <p class="modal-lead">Dein Lernsystem für die Azure AZ-305 Zertifizierung. Starte jederzeit, lerne im eigenen Tempo — die App merkt sich deinen Fortschritt automatisch in diesem Browser.</p>
+
+        <div class="onboard-steps">
+          <div class="onboard-step"><span class="onboard-num">01</span><div><strong>Sprint</strong><small>14-Tage-Plan zum Abhaken — im eigenen Tempo, ohne festen Termin.</small></div></div>
+          <div class="onboard-step"><span class="onboard-num">02</span><div><strong>Case Drill</strong><small>150 Architektur-Fragen. Falsche kommen über „Wiederholen" gezielt zurück.</small></div></div>
+          <div class="onboard-step"><span class="onboard-num">03</span><div><strong>Labs &amp; Spickzettel</strong><small>8 Design-Labs mit Lösungsskizze + druckbarer PDF-Spickzettel pro Domain.</small></div></div>
+          <div class="onboard-step"><span class="onboard-num">04</span><div><strong>Exam &amp; Analytics</strong><small>50-Fragen-Prüfungssimulation, schwache Domains, Score-Verlauf.</small></div></div>
+        </div>
+
+        <button class="primary-btn modal-cta" id="onboardStart" type="button">Los geht's 🚀</button>
+        <button class="modal-skip" id="onboardSkip" type="button">Überspringen</button>
+        <p class="modal-sig">Gebaut von <b>Tarek</b> · Cloud Engineer</p>
+      </div>
+    </div>
+
+    <script src="app.js"></script>
+  </body>
+</html>
